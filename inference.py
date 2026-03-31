@@ -60,6 +60,7 @@ def env_reset(task_id: str) -> Dict[str, Any]:
         f"{ENV_BASE_URL}/reset",
         json={"task_id": task_id},
         timeout=30,
+        verify=False,
     )
     resp.raise_for_status()
     return resp.json()
@@ -70,13 +71,14 @@ def env_step(action: Dict[str, Any]) -> Dict[str, Any]:
         f"{ENV_BASE_URL}/step",
         json={"action": action},
         timeout=30,
+        verify=False,
     )
     resp.raise_for_status()
     return resp.json()
 
 
 def env_state() -> Dict[str, Any]:
-    resp = requests.get(f"{ENV_BASE_URL}/state", timeout=10)
+    resp = requests.get(f"{ENV_BASE_URL}/state", timeout=10, verify=False)
     resp.raise_for_status()
     return resp.json()
 
@@ -273,7 +275,7 @@ def main():
 
     # Check env server is up
     try:
-        resp = requests.get(f"{ENV_BASE_URL}/health", timeout=10)
+        resp = requests.get(f"{ENV_BASE_URL}/health", timeout=10, verify=False)
         resp.raise_for_status()
         print(f"Environment server: {resp.json()}")
     except Exception as e:

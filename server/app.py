@@ -138,8 +138,10 @@ def list_tasks():
 
 
 @app.post("/reset", tags=["env"])
-def reset(req: ResetRequest):
+def reset(req: ResetRequest = None):
     """Reset the environment and start a new episode."""
+    if req is None:
+        req = ResetRequest()
     global _env
     if req.task_id not in ALL_TASKS:
         raise HTTPException(
