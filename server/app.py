@@ -137,7 +137,7 @@ def list_tasks():
     }
 
 
-@app.post("/reset", response_model=TriageObservation, tags=["env"])
+@app.post("/reset", tags=["env"])
 def reset(req: ResetRequest):
     """Reset the environment and start a new episode."""
     global _env
@@ -148,10 +148,12 @@ def reset(req: ResetRequest):
         )
     _env = SRETriageEnvironment(task_id=req.task_id)
     obs = _env.reset(episode_id=req.episode_id)
-    return obs
+    return {
+        "observation": obs.model_dump(),
+    }
 
 
-@app.post("/step", response_model=TriageObservation, tags=["env"])
+@app.post("/step", tags=["env"])
 def step(req: StepRequest):
     """Execute one action in the environment."""
     env = get_env()
@@ -160,7 +162,12 @@ def step(req: StepRequest):
     except Exception as e:
         raise HTTPException(status_code=422, detail=f"Invalid action: {e}")
     obs = env.step(action)
-    return obs
+    return {
+        "observation": obs.model_dump(),
+        "reward": obs.reward,
+        "done": obs.done,
+        "info": obs.metadata,
+    }
 
 
 @app.get("/state", response_model=TriageState, tags=["env"])
