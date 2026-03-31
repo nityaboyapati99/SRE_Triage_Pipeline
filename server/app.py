@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from typing import Any, Dict, Optional
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Body
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -138,7 +138,7 @@ def list_tasks():
 
 
 @app.post("/reset", tags=["env"])
-def reset(req: ResetRequest = None):
+def reset(req: Optional[ResetRequest] = Body(default=None)):
     """Reset the environment and start a new episode."""
     if req is None:
         req = ResetRequest()
