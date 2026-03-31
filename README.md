@@ -1,3 +1,14 @@
+---
+title: SRE Triage Pipeline
+emoji: 🚨
+colorFrom: red
+colorTo: orange
+sdk: docker
+pinned: false
+tags:
+  - openenv
+---
+
 # SRE Triage Pipeline — OpenEnv Environment
 
 An OpenEnv-compliant AI evaluation environment where agents diagnose production incidents by investigating simulated logs, metrics, and deployment history — then submit a structured diagnosis.
