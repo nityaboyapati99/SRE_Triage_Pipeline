@@ -1,0 +1,31 @@
+spec_version: 1
+name: sre_triage_pipeline
+version: "1.0.0"
+description: >
+  SRE Triage Pipeline — AI agents diagnose production incidents by querying
+  simulated logs, metrics, and deployments, then submit a structured diagnosis
+  with root cause, affected services, severity, and escalation decision.
+  Three tasks from single-service failure to platform-wide cascading outage.
+type: space
+runtime: fastapi
+app: server.app:app
+port: 7860
+tags:
+  - openenv
+  - sre
+  - incident-response
+  - triage
+  - agent-eval
+tasks:
+  - id: task_easy
+    name: Basic Incident Triage
+    difficulty: easy
+    pass_threshold: 0.70
+  - id: task_medium
+    name: Cross-Service Cascading Failure
+    difficulty: medium
+    pass_threshold: 0.65
+  - id: task_hard
+    name: Platform-Wide Outage with Red Herrings
+    difficulty: hard
+    pass_threshold: 0.55
