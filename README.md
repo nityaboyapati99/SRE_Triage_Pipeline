@@ -105,6 +105,62 @@ Scores are computed on `submit_diagnosis` (0.0–1.0):
 
 ## Setup & Usage
 
+### Live Space (no setup required)
+
+The environment is live at:
+**https://nityaboyapati-sre-triage-pipeline.hf.space**
+
+Test it instantly with curl:
+
+```bash
+# Health check
+curl https://nityaboyapati-sre-triage-pipeline.hf.space/health
+
+# List tasks
+curl https://nityaboyapati-sre-triage-pipeline.hf.space/tasks
+
+# Start an episode (easy task)
+curl -X POST https://nityaboyapati-sre-triage-pipeline.hf.space/reset \
+  -H "Content-Type: application/json" \
+  -d '{"task_id": "task_easy"}'
+
+# Query logs
+curl -X POST https://nityaboyapati-sre-triage-pipeline.hf.space/step \
+  -H "Content-Type: application/json" \
+  -d '{"action": {"action_type": "query_logs", "service_name": "payment-service"}}'
+
+# Submit diagnosis
+curl -X POST https://nityaboyapati-sre-triage-pipeline.hf.space/step \
+  -H "Content-Type: application/json" \
+  -d '{
+    "action": {
+      "action_type": "submit_diagnosis",
+      "root_cause": "Database connection pool exhausted due to timeouts on postgres-primary",
+      "affected_services": ["payment-service"],
+      "severity_assessment": "P2",
+      "escalation_decision": "page_on_call"
+    }
+  }'
+
+# Check current state
+curl https://nityaboyapati-sre-triage-pipeline.hf.space/state
+```
+
+### Run Baseline Inference
+
+```bash
+git clone https://github.com/nityaboyapati99/SRE_Triage_Pipeline
+cd SRE_Triage_Pipeline
+pip install -r requirements.txt
+
+export API_BASE_URL="https://router.huggingface.co/v1"
+export MODEL_NAME="meta-llama/Llama-3.3-70B-Instruct"
+export HF_TOKEN="your-hf-token"
+export ENV_BASE_URL="https://nityaboyapati-sre-triage-pipeline.hf.space"
+
+python inference.py
+```
+
 ### Local
 
 ```bash
@@ -119,6 +175,7 @@ uvicorn server.app:app --host 0.0.0.0 --port 7860
 export API_BASE_URL="https://router.huggingface.co/v1"
 export MODEL_NAME="meta-llama/Llama-3.3-70B-Instruct"
 export HF_TOKEN="your-hf-token"
+export ENV_BASE_URL="http://localhost:7860"
 python inference.py
 ```
 
@@ -128,7 +185,6 @@ python inference.py
 docker build -t sre-triage-pipeline .
 docker run -p 7860:7860 sre-triage-pipeline
 
-# Run inference against the container
 export ENV_BASE_URL="http://localhost:7860"
 python inference.py
 ```
